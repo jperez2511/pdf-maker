@@ -13,13 +13,22 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   pdf.create(req.body.html, { width: '80mm', height: '297mm', margin: '0' })
-    .toStream((error, stream) => {
-      if (error) {
-        res.status(500).send(error)
+    // .toStream((error, stream) => {
+    //   if (error) {
+    //     res.status(500).send(error)
+    //   }
+    //   else {
+    //     res.setHeader('Content-Type', 'application/pdf')
+    //     stream.pipe(res)
+    //   }
+    // })
+    .toBuffer((err, buffer) => {
+      if (err) {
+        res.status(500).send(err)
       }
       else {
         res.setHeader('Content-Type', 'application/pdf')
-        stream.pipe(res)
+        res.send(buffer)
       }
     })
 })
