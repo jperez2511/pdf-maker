@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const pdf = require('html-pdf')
+const fs = require('fs')
 
 const port = 3000
 
@@ -8,7 +9,8 @@ const app = express()
 app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-  res.send('I\'m up!!')
+  const package = JSON.parse(fs.readFileSync('./package.json'))
+  res.send(`PDF-MAKER v${ package.version }`)
 })
 
 app.post('/', (req, res) => {
