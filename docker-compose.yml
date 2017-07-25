@@ -6,7 +6,9 @@ services:
     ports:
       - '5001:3000'
   chrome:
-    image: yukinying/chrome-headless-browser
+    build:
+      context: .
+      dockerfile: chrome.Dockerfile
     cap_add:
       - SYS_ADMIN
     ports:
