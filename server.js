@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const pdf = require('html-pdf')
+const htmlPdf = require('html-pdf-chrome')
 const fs = require('fs')
 
 const port = 3000
@@ -10,20 +10,34 @@ app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   const package = JSON.parse(fs.readFileSync('./package.json'))
-  res.send(`PDF-MAKER v${ package.version }`)
+  res.send(`PDF-MAKER v${ package.version }!`)
 })
 
-app.post('/', (req, res) => {
-  pdf.create(req.body.html, { width: '80mm', height: '297mm', margin: '0' })
-    .toBuffer((err, buffer) => {
-      if (err) {
-        res.status(500).send(err)
-      }
-      else {
-        res.setHeader('Content-Type', 'application/pdf')
-        res.send(buffer)
-      }
-    })
+const defaultOptions = {
+  host: 'chrome',
+  port: 9222
+}
+
+async function handler (req, res) {
+  const options = Object.assign(defaultOptions, { printOptions: req.body.options })
+  try {
+    const pdf = await htmlPdf.create(req.body.html, options)
+    const buffer = pdf.toBuffer()
+    res.setHeader('Content-Type', 'application/pdf')
+    res.send(buffer)
+  }
+  catch (error) {
+    res.status(500).send(error)
+  }
+}
+
+app.post('/', handler)
+
+app.get('/test', (req, res) => {
+  req.body.html = `
+    <p>test</p>
+  `
+  handler(req, res)
 })
 
 app.use((err, req, res, next) => {

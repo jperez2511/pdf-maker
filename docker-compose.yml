@@ -5,3 +5,9 @@ services:
     build: .
     ports:
       - '5001:3000'
+  chrome:
+    image: yukinying/chrome-headless-browser
+    cap_add:
+      - SYS_ADMIN
+    ports:
+      - '5002:9222'
