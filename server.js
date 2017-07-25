@@ -19,7 +19,20 @@ const defaultOptions = {
 }
 
 async function handler (req, res) {
-  const options = Object.assign(defaultOptions, { printOptions: req.body.options })
+  const options = Object.assign(
+    defaultOptions,
+    {
+      printOptions: Object.assign(
+        {
+          marginTop: 0,
+          marginRight: 0,
+          marginBottom: 0,
+          marginLeft: 0
+        },
+        req.body.options
+      )
+    }
+  )
   try {
     const pdf = await htmlPdf.create(req.body.html, options)
     const buffer = pdf.toBuffer()
