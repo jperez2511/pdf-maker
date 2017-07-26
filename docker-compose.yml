@@ -5,11 +5,16 @@ services:
     build: .
     ports:
       - '5001:3000'
+    volumes:
+      - html-sources:/var/lib/html
   chrome:
     build:
-      context: .
-      dockerfile: chrome.Dockerfile
+      context: services/chrome
     cap_add:
       - SYS_ADMIN
     ports:
       - '5002:9222'
+    volumes:
+      - html-sources:/var/lib/html
+volumes:
+  html-sources:
