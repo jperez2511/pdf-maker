@@ -6,6 +6,7 @@ RUN npm install --global ts-node
 RUN mkdir app
 WORKDIR /app
 COPY package.json .
+COPY package-lock.json .
 RUN npm install
 COPY . .
 EXPOSE 3000
