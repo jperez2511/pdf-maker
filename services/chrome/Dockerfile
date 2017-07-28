@@ -1,5 +1,4 @@
 FROM justinribeiro/chrome-headless
 USER root
-RUN apt update && apt install -qq \
+RUN apt-get update && apt-get install -qq \
     fonts-roboto
-USER chrome
