@@ -13,7 +13,7 @@ app.use(bodyParser.json({ limit: '50mb' }))
 
 app.get('/', (req, res) => {
   const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
-  res.send(`PDF-MAKER v${ pkg.version }!`)
+  res.send(`PDF-MAKER v${ pkg.version }!\n`)
 })
 
 const defaultOptions = {
