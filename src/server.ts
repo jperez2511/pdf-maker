@@ -9,7 +9,7 @@ import { promisify } from 'util'
 const port = 3000
 
 const app = express()
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.json({ limit: '50mb' }))
 
 app.get('/', (req, res) => {
   const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))

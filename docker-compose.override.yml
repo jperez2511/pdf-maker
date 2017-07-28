@@ -4,7 +4,6 @@ services:
   app:
     command: npm run dev
     ports:
-      - '5001:3000'
       - '9229:9229'
     volumes:
       - .:/app
