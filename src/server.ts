@@ -2,50 +2,63 @@ import * as express from 'express'
 import { Request, Response, NextFunction, Errback } from 'express'
 import * as bodyParser from 'body-parser'
 import * as htmlPdf from 'html-pdf-chrome'
+import { CreateOptions, OutputType } from 'html-pdf-chrome'
 import * as fs from 'fs'
 import * as uuid from 'uuid/v4'
 import { promisify } from 'util'
+import * as commander from 'commander'
+import merge = require('lodash.merge')
 
 const port = 3000
 
 const app = express()
 app.use(bodyParser.json({ limit: '50mb' }))
 
-app.get('/', (req, res) => {
+const writeFileAsync = promisify(fs.writeFile)
+const unlinkAsync = promisify(fs.unlink)
+
+commander
+  .option('-t, --temp-dir <p>', 'Temporary files directory')
+  .parse(process.argv)
+
+const tempDir = commander.tempDir
+
+app.get('/version', (req, res) => {
   const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
   res.send(`PDF-MAKER v${ pkg.version }!\n`)
 })
 
-const defaultOptions = {
-  host: 'chrome',
-  port: 9222
+const returnTypes: {[x: string]: { method: 'toBase64' | 'toBuffer', mime: (what?: OutputType) => string } } = {
+  'base64': {
+    method: 'toBase64',
+    mime: () => 'text/plain'
+  },
+  'buffer': {
+    method: 'toBuffer',
+    mime: (what: OutputType) => what === 'screenshot' ? 'image/png' : 'application/pdf'
+  }
 }
 
-const writeFileAsync = promisify(fs.writeFile)
-const unlinkAsync = promisify(fs.unlink)
-
 async function handler (req: Request, res: Response, next: NextFunction) {
-  const fileName = `/var/lib/html/${ uuid() }.html`
-  const options = Object.assign(
-    defaultOptions,
-    {
-      printOptions: Object.assign(
-        {
-          marginTop: 0,
-          marginRight: 0,
-          marginBottom: 0,
-          marginLeft: 0
-        },
-        req.body.options
-      )
+  const fileName = `${ tempDir }/${ uuid() }.html`
+  const defaultOptions: CreateOptions = {
+    host: 'chrome',
+    port: 9222,
+    printOptions: {
+      marginTop: 0,
+      marginRight: 0,
+      marginBottom: 0,
+      marginLeft: 0
     }
-  )
+  }
   try {
     await writeFileAsync(fileName, req.body.html)
-    const pdf = await htmlPdf.create(`file:///${ fileName }`, options)
-    const buffer = pdf.toBuffer()
-    res.setHeader('Content-Type', 'application/pdf')
-    res.send(buffer)
+    const options: CreateOptions = merge(defaultOptions, req.body.options)
+    const outputType: OutputType = req.path.includes('screenshot') ? 'screenshot' : 'pdf'
+    const pdf = await htmlPdf.create(`file:///${ fileName }`, options, outputType)
+    const result = pdf[returnTypes[req.query.return || 'buffer'].method]()
+    res.setHeader('Content-Type', returnTypes[req.query.return || 'buffer'].mime(outputType))
+    res.send(result)
   }
   catch (error) {
     next(error)
@@ -58,8 +71,8 @@ async function handler (req: Request, res: Response, next: NextFunction) {
   }
 }
 
-app.post('/', handler)
-
+app.post('/pdf', handler)
+app.post('/screenshot', handler)
 app.get('/test', (req, res, next) => {
   req.body.html = `
     <p>test</p>
