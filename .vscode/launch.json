@@ -20,7 +20,7 @@
       "type": "node",
       "request": "attach",
       "name": "Attach to Remote",
-      "address": "docker",
+      "address": "localhost",
       "port": 9229,
       "localRoot": "${workspaceRoot}",
       "remoteRoot": "/app",

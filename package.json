@@ -5,7 +5,7 @@
   "main": "bin/server.js",
   "scripts": {
     "start": "tsc && node . --temp-dir=/var/lib/html",
-    "dev": "nodemon --legacy-watch --ext ts --exec \"tsc && node --inspect=0.0.0.0:9229 . --temp-dir=/var/lib/html\"",
+    "dev": "nodemon --ext ts --exec \"tsc && node --inspect=0.0.0.0:9229 . --temp-dir=/var/lib/html\"",
     "dev-local": "nodemon --ext ts --exec \"tsc && node --inspect=0.0.0.0:9229 . --temp-dir=C:\\Users\\Carlos\\AppData\\Local\\Temp\""
   },
   "author": "",
@@ -14,6 +14,7 @@
     "body-parser": "1.17.1",
     "commander": "^2.11.0",
     "express": "^4.15.2",
+    "html-pdf-chrome": "git://github.com/rhyek/html-pdf-chrome.git#screenshots",
     "lodash.merge": "^4.6.0",
     "uuid": "^3.1.0"
   },
