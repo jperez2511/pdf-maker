@@ -14,7 +14,7 @@
     "body-parser": "1.17.1",
     "commander": "^2.11.0",
     "express": "^4.15.2",
-    "html-pdf-chrome": "git://github.com/rhyek/html-pdf-chrome.git#screenshots",
+    "html-pdf-chrome": "git://github.com/rhyek/html-pdf-chrome.git#screenshots_compiled",
     "lodash.merge": "^4.6.0",
     "uuid": "^3.1.0"
   },

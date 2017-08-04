@@ -3,4 +3,5 @@ version: '2'
 services:
   app:
     restart: always
-    
+  chrome:
+    restart: always

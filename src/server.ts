@@ -23,7 +23,7 @@ commander
 
 const tempDir = commander.tempDir
 
-app.get('/version', (req, res) => {
+app.get('', (req, res) => {
   const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'))
   res.send(`PDF-MAKER v${ pkg.version }!\n`)
 })

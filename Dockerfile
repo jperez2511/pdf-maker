@@ -1,6 +1,6 @@
 
 FROM node:8.2
-LABEL Name=pdf-maker Version=0.1.0
+LABEL Name=pdf-maker Version=0.2.0
 RUN npm install --global typescript
 RUN mkdir app
 WORKDIR /app
